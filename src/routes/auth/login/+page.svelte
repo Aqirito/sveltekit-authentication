@@ -10,7 +10,6 @@
 <form method="POST" use:enhance={
   ({ form }) => {
     return async ({ result, update }) => {
-      console.log(result.type);
       // reset forms if success
       if (result.type === 'success') {
         form.reset();
@@ -24,8 +23,8 @@
   }
 }>
   <label>
-    Username
-    <input name="username" value="{form?.value?.username ?? ''}" type="text">
+    Phone Number
+    <input name="phone_no" value="{form?.value?.phone_no ?? ''}" type="text">
   </label>
   <label>
     Password
