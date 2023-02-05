@@ -5,9 +5,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 
 export const load: PageServerLoad = async ({locals}) => {
-  if(locals.role === "ADMIN") {
-    throw redirect(303, '/admin');
-  }
+  parent
   return {
     data: locals,
   }
@@ -15,7 +13,7 @@ export const load: PageServerLoad = async ({locals}) => {
 
 export const actions = {
   default: async ({ request, fetch, cookies }) => {
-    // TODO log the user in
+
     // console.log('login request', request);
     const formData = await request.formData();
     // console.log('login formData', formData)
@@ -28,7 +26,7 @@ export const actions = {
       phone_no,
       password
     }
-    const res = await fetch('/auth/login-v2', {
+    const res = await fetch('/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,10 +38,15 @@ export const actions = {
     const decodedToken: any = jwt_decode(accessToken);
     console.log('decodedToken', decodedToken);
 
-    cookies.set('access_token', results.access_token, { 
-      maxAge: decodedToken.exp,
+    // for expire time was set it both to make sure most of the browser works
+    cookies.set('access_token', results.access_token, {
+      path: '/', // path msut be set to root for make all routes authentication works
+      maxAge: parseInt(decodedToken.exp),
       secure: true,
-      sameSite: "strict"
+      httpOnly: true,
+      sameSite: "strict",
+      priority: 'high', // for authentications
+      expires: new Date(decodedToken.exp),
     })
     return {
       success: true,

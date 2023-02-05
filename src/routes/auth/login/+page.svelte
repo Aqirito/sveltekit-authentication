@@ -3,9 +3,7 @@
   import type { PageData } from './$types';
   
   export let data: PageData;
-  console.log('data', data);
-  export let action: any;
-  console.log('server', action);
+  // console.log('data', data);
 </script>
 
 <h1>{JSON.stringify(data)}</h1>
