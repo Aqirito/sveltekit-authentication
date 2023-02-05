@@ -1,13 +1,16 @@
 <script lang="ts">
-	import { applyAction, enhance } from "$app/forms";
-
-  export let form: any;
-  export let data: any;
-  console.log('form', form);
+	import { applyAction, enhance } from '$app/forms';
+  import type { PageData } from './$types';
+  
+  export let data: PageData;
   console.log('data', data);
+  export let action: any;
+  console.log('server', action);
 </script>
 
-<form method="POST" use:enhance={
+<h1>{JSON.stringify(data)}</h1>
+
+<form method="POST" use:enhance = {
   ({ form }) => {
     return async ({ result, update }) => {
       // reset forms if success
@@ -22,19 +25,9 @@
     }
   }
 }>
-  <label>
-    Phone Number
-    <input name="phone_no" value="{form?.value?.phone_no ?? ''}" type="text">
-  </label>
-  <label>
-    Password
-    <input name="password" value="{form?.value?.password ?? ''}" type="password">
-  </label>
-  <button>Log in</button>
+  <label for="phone_no">Phone Number</label>
+  <input name="phone_no" id="phone_no" type="text">
+  <label for="password">Password</label>
+  <input name="password" id="password" type="password">
+  <button type="submit">Submit</button>
 </form>
-
-{#if form?.success === false}
-  <h1>
-    error: {form?.message}
-  </h1>
-{/if}
