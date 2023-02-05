@@ -1,47 +1,52 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+import jwt_decode from 'jwt-decode';
 const apiUrl = import.meta.env.VITE_API_URL;
- 
+
+
+export const load: PageServerLoad = async ({locals}) => {
+  if(locals.role === "ADMIN") {
+    throw redirect(303, '/admin');
+  }
+  return {
+    data: locals,
+  }
+}
+
 export const actions = {
-  default: async ({ request, locals, fetch }) => {
+  default: async ({ request, fetch, cookies }) => {
     // TODO log the user in
     // console.log('login request', request);
     const formData = await request.formData();
-    console.log('login formData', formData)
+    // console.log('login formData', formData)
 
     // seperate the data for validations
     const phone_no = formData.get('phone_no');
     const password = formData.get('password');
 
-    // TODO you can create validations here
-    if (!phone_no) {
-      return fail(400, {
-        success: false,
-        message: "Phone number is Required!.",
-        // the data is dissapear after form actions is accur
-        // return the from value to get back the value submitted
-        // so user will not rewrite the forms from zero 
-        value: {
-          phone_no,
-          password
-        }
-      })
+    const payload = {
+      phone_no,
+      password
     }
-    if (phone_no.length < 9) {
-      return fail(400, {
-        success: false,
-        message: "Phone number must be atleast two characters"
-      })
-    }
-    if (!password) {
-      return fail(400, {
-        success: false,
-        message: "Password is required!"
-      })
-    }
-    // throw redirect(303, '/');
+    const res = await fetch('/auth/login-v2', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+    const results = await res.json();
+    const accessToken = results.access_token;
+    const decodedToken: any = jwt_decode(accessToken);
+    console.log('decodedToken', decodedToken);
+
+    cookies.set('access_token', results.access_token, { 
+      maxAge: decodedToken.exp,
+      secure: true,
+      sameSite: "strict"
+    })
     return {
-      success: true
+      success: true,
     }
   }
 } satisfies Actions;
