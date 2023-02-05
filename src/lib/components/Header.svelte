@@ -1,11 +1,20 @@
-<header>
-  <ul class="top-nav">
-    <li><a href="/">Home</a></li>
-    <li><a href="/public">Public</a></li>
-    <li><a href="/admin">Admin</a></li>
-    <li><a href="#">Logout</a></li>
-  </ul>
-</header>
+<script lang="ts">
+  export let data: any;
+  // console.log('header data', data)
+</script>
+
+{#if data.locals.isAuth}
+  <header>
+    <ul class="top-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/public">Public</a></li>
+      {#if data.locals.role === 'ADMIN'}
+        <li><a href="/admin">Admin</a></li>
+      {/if}
+      <li><a href="#">Logout</a></li>
+    </ul>
+  </header>
+{/if}
 
 <style>
   header {

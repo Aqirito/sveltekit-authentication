@@ -1,10 +1,17 @@
-<header>
-  <ul class="top-nav">
-    <li><a href="/">Home</a></li>
-    <li><a href="/auth/login">Login</a></li>
-    <li><a href="/auth/register">Register</a></li>
-  </ul>
-</header>
+<script lang="ts">
+  export let data: any;
+  // console.log('header data', data)
+</script>
+
+{#if !data.locals.isAuth}
+  <header>
+    <ul class="top-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/auth/login">Login</a></li>
+      <li><a href="/auth/register">Register</a></li>
+    </ul>
+  </header>
+{/if}
 
 <style>
   header {
