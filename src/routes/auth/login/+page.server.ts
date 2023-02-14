@@ -4,8 +4,8 @@ import jwt_decode from 'jwt-decode';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
-export const load: PageServerLoad = async ({locals}) => {
-  parent
+export const load: PageServerLoad = async ({locals, parent}) => {
+  parent()
   return {
     data: locals,
   }
