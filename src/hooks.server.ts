@@ -16,6 +16,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     // console.log('decodedToken', decodedToken);
     if (decodedToken.phone_no && decodedToken.userid) {
       event.locals.isAuth = true
+      event.locals.role = decodedToken?.user_role
     }
     // convert datetime to seconds
     const currentDateTime = new Date();
@@ -24,14 +25,13 @@ export const handle: Handle = async ({ event, resolve }) => {
     // check if session from decoded token expires
     if (currentSeconds >= decodedToken.exp) {
       console.log('session expired!!');
-      event.cookies.delete('access_token');
+      event.cookies.delete('access_token', {path: '/'});
       event.locals.isAuth = false
     }
   }
 
   // console.log('locvals', event.locals);
   // console.log('url', event.url.pathname);
-
   if (event.url.pathname.startsWith('/public')) {
     if (!event.locals.isAuth) {
       throw redirect(303, '/');
