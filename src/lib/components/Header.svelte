@@ -11,7 +11,7 @@
       {#if data.locals.role === 'ADMIN'}
         <li><a href="/admin">Admin</a></li>
       {/if}
-      <li><a href="#">Logout</a></li>
+      <li><a href="/auth/logout">Logout</a></li>
     </ul>
   </header>
 {/if}
